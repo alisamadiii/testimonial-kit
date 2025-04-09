@@ -2,8 +2,20 @@
 
 import { useDeleteApiKey, useGetApiKeys } from "@/db/use-api-keys";
 import { Button } from "@/components/ui/button";
-import { ApiKey, apiKeys } from "@/db/schema";
+import { ApiKey } from "@/db/schema";
 import { Skeleton } from "@/components/ui/skeleton";
+
+import {
+  AlertDialog,
+  AlertDialogContent,
+  AlertDialogHeader,
+  AlertDialogTitle,
+  AlertDialogTrigger,
+  AlertDialogFooter,
+  AlertDialogCancel,
+  AlertDialogAction,
+  AlertDialogDescription,
+} from "@/components/ui/alert-dialog";
 
 export default function Apis() {
   const { data, isPending, error } = useGetApiKeys();
@@ -30,14 +42,35 @@ const ApiKeyCard = ({ apiKey }: { apiKey: ApiKey }) => {
     <div className="flex items-center gap-2 rounded-lg border p-2">
       <p>{apiKey.name}</p>
       <p className="text-muted-foreground text-sm">{apiKey.key}</p>
-      <Button
-        onClick={() => deleteApiKey.mutate({ id: apiKey.id })}
-        disabled={deleteApiKey.isPending}
-        className="ml-auto"
-        variant="destructive"
-      >
-        Delete
-      </Button>
+      <AlertDialog>
+        <AlertDialogTrigger asChild>
+          <Button
+            disabled={deleteApiKey.isPending}
+            className="ml-auto"
+            variant="destructive"
+          >
+            Delete
+          </Button>
+        </AlertDialogTrigger>
+        <AlertDialogContent>
+          <AlertDialogHeader>
+            <AlertDialogTitle>Are you sure?</AlertDialogTitle>
+            <AlertDialogDescription>
+              This action cannot be undone.
+            </AlertDialogDescription>
+          </AlertDialogHeader>
+          <AlertDialogFooter>
+            <AlertDialogCancel asChild>
+              <Button variant="outline">Cancel</Button>
+            </AlertDialogCancel>
+            <AlertDialogAction
+              onClick={() => deleteApiKey.mutate({ id: apiKey.id })}
+            >
+              Delete
+            </AlertDialogAction>
+          </AlertDialogFooter>
+        </AlertDialogContent>
+      </AlertDialog>
     </div>
   );
 };

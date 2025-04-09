@@ -6,7 +6,6 @@ import {
 
 import Content from "@/components/content";
 import Testimonials from "./testimonial";
-import { getTestimonials } from "@/db/action";
 
 type Props = {
   params: Promise<{

@@ -183,7 +183,7 @@ export default async function AppWrapper({
           <h1 className="text-3xl font-bold text-neutral-900">Access Denied</h1>
           <p className="text-neutral-600">
             You need to manually make your self an admin to continue. Simply go
-            to your DB and update your role to "admin".
+            to your DB and update your role to &quot;admin&quot;.
           </p>
         </div>
       </Content>

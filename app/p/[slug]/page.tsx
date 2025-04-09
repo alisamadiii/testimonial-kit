@@ -1,8 +1,4 @@
-import {
-  QueryClient,
-  HydrationBoundary,
-  dehydrate,
-} from "@tanstack/react-query";
+import { QueryClient } from "@tanstack/react-query";
 
 import Content from "@/components/content";
 import { getProjectsById } from "@/db/action";
@@ -33,6 +29,7 @@ export default async function EachProjectPage({ params }: Props) {
 
   return (
     <Content className="">
+      test
       {/* <HydrationBoundary state={dehydrate(queryClient)}>
         <ProjectContent slug={slug} />
       </HydrationBoundary> */}

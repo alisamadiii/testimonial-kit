@@ -241,8 +241,8 @@ export const updateTestimonial = async ({
 
 export const insertDummyTestimonials = async () => {
   await db.insert(testimonials).values(
-    Array.from({ length: 100 }, () => ({
-      projectId: "QIRpyPa5uOf",
+    Array.from({ length: 20 }, () => ({
+      projectId: "Vsj-TZ1-shr",
       name: faker.person.fullName(),
       message: faker.lorem.paragraph(),
       createdAt: new Date(

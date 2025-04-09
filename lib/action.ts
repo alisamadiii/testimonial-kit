@@ -1,11 +1,9 @@
 "use server";
 
-import { auth } from "@/auth/auth";
 import { db } from "@/db";
 import { tasksTable } from "@/db/schema";
 import { eq } from "drizzle-orm";
 import { revalidatePath } from "next/cache";
-import { headers } from "next/headers";
 
 export async function createTask(title: string) {
   await db.insert(tasksTable).values({ title });
