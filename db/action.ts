@@ -13,10 +13,14 @@ import {
   analytics,
 } from "@/db/schema";
 import { desc, eq, and } from "drizzle-orm";
+import { faker } from "@faker-js/faker";
 
 export const getApiKeys = async (): Promise<ServerResponse<ApiKey[]>> => {
   try {
     const data = await db.select().from(apiKeys);
+
+    console.log("getting api keys 🌆🌆🌆🌆🌆🌆🌆");
+
     return { data };
   } catch (error) {
     console.error(error);
@@ -151,6 +155,21 @@ export const createProject = async ({
   }
 };
 
+export const deleteProject = async ({
+  id,
+}: {
+  id: string;
+}): Promise<ServerResponse<string>> => {
+  try {
+    await db.delete(projects).where(eq(projects.id, id));
+
+    return { data: "Project deleted" };
+  } catch (error) {
+    console.error(error);
+    return { error: (error as Error).message || "Failed to delete project" };
+  }
+};
+
 // testimonials
 export const getTestimonials = async ({
   projectId,
@@ -163,6 +182,8 @@ export const getTestimonials = async ({
       .from(testimonials)
       .where(eq(testimonials.projectId, projectId))
       .orderBy(desc(testimonials.createdAt));
+
+    console.log("gettin testimonials 😏");
 
     return { data };
   } catch (error) {
@@ -218,14 +239,14 @@ export const updateTestimonial = async ({
   }
 };
 
-export const insertTestimonials = async () => {
+export const insertDummyTestimonials = async () => {
   await db.insert(testimonials).values(
-    Array.from({ length: 100 }, (_, index) => ({
-      projectId: "1",
-      name: "John Doe",
-      message: "This is a testimonial",
+    Array.from({ length: 100 }, () => ({
+      projectId: "QIRpyPa5uOf",
+      name: faker.person.fullName(),
+      message: faker.lorem.paragraph(),
       createdAt: new Date(
-        Date.now() - Math.floor(Math.random() * 10) * 24 * 60 * 60 * 1000
+        Date.now() - Math.floor(Math.random() * 40) * 24 * 60 * 60 * 1000
       ),
     }))
   );

@@ -15,6 +15,8 @@ export const useGetTestimonials = (projectId: string) => {
       try {
         const { data, error } = await getTestimonials({ projectId });
 
+        console.log("Running query");
+
         if (error) {
           throw new Error(error);
         }

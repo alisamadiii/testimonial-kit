@@ -19,18 +19,18 @@ export default async function DashboardPage({ params }: Props) {
 
   const queryClient = new QueryClient();
 
-  await queryClient.prefetchQuery({
-    queryKey: ["testimonials", slug],
-    queryFn: async () => {
-      const { data, error } = await getTestimonials({ projectId: slug });
+  // await queryClient.prefetchQuery({
+  //   queryKey: ["testimonials", slug],
+  //   queryFn: async () => {
+  //     const { data, error } = await getTestimonials({ projectId: slug });
 
-      if (error) {
-        throw new Error(error);
-      }
+  //     if (error) {
+  //       throw new Error(error);
+  //     }
 
-      return data;
-    },
-  });
+  //     return data;
+  //   },
+  // });
 
   return (
     <Content>

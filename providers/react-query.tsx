@@ -15,7 +15,6 @@ export default function QueryClientProviders({ children }: Props) {
       defaultOptions: {
         queries: {
           staleTime: 5 * 60 * 1000,
-          refetchOnWindowFocus: "always",
         },
       },
     });

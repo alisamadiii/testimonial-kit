@@ -114,7 +114,7 @@ export const testimonials = pgTable("testimonials", {
     .primaryKey(),
   name: text("name").notNull(),
   message: text("message").notNull(),
-  createdAt: timestamp("created_at").defaultNow(),
+  createdAt: timestamp("created_at").notNull().defaultNow(),
   status: text("status", {
     enum: ["pending", "approved", "archived"],
   }).default("pending"),
@@ -134,6 +134,7 @@ export const analytics = pgTable("analytics", {
     .default(0),
   totalViews: integer("total_views").notNull().default(0),
   dateTestimonials: json("date_testimonials")
+    .$type<Array<{ date: string; count: number } | null>>()
     .notNull()
     .default(sql`'[]'::json`),
 });

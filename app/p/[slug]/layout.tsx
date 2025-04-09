@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ChevronLeft, House, KeyRound, Settings } from "lucide-react";
 
 import Content from "@/components/content";
-import { Button } from "@/components/ui/button";
+import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@radix-ui/react-separator";
 
 const tabs = [
@@ -44,20 +44,22 @@ export default async function ProjectLayout({ children, params }: Props) {
           </Button>
         </Link>
         {tabs.map((tab) => (
-          <Link href={`/p/${slug}/${tab.key}`} key={tab.name}>
-            <Button
-              variant={tab.key === slug ? "default" : "ghost"}
-              size="sm"
-              className="w-full justify-start transition-none"
-            >
-              <tab.icon />
-              {tab.name}
-            </Button>
+          <Link
+            href={`/p/${slug}/${tab.key}`}
+            key={tab.name}
+            className={buttonVariants({
+              variant: tab.key === slug ? "default" : "ghost",
+              size: "sm",
+              className: "justify-start",
+            })}
+          >
+            <tab.icon />
+            {tab.name}
           </Link>
         ))}
       </div>
       <Separator orientation="vertical" className="!h-screen" />
-      {children}
+      <main className="flex-1">{children}</main>
     </Content>
   );
 }

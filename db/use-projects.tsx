@@ -1,7 +1,13 @@
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { createProject, getProjects, getProjectsById } from "./action";
+import {
+  createProject,
+  deleteProject,
+  getProjects,
+  getProjectsById,
+} from "./action";
 import { useGetUser } from "@/auth/useAuth";
 import { toast } from "sonner";
+import { useRouter } from "next/navigation";
 
 export const useGetProjects = () => {
   return useQuery({
@@ -66,6 +72,38 @@ export const useCreateProject = () => {
     },
     onSuccess: () => {
       queryClient.invalidateQueries({ queryKey: ["projects"] });
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+};
+
+export const useDeleteProject = () => {
+  const { data: userData } = useGetUser();
+  const queryClient = useQueryClient();
+
+  const router = useRouter();
+
+  return useMutation({
+    mutationFn: async ({ id }: { id: string }) => {
+      if (!userData) {
+        throw new Error("User not found");
+      }
+
+      const { data, error } = await deleteProject({
+        id,
+      });
+
+      if (error) {
+        throw new Error(error);
+      }
+
+      return data;
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["projects"] });
+      router.push("/");
     },
     onError: (error) => {
       toast.error(error.message);

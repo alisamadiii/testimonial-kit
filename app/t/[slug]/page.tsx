@@ -4,20 +4,8 @@ import { notFound } from "next/navigation";
 
 import Content from "@/components/content";
 import { db } from "@/db";
-import { ProjectField, projects } from "@/db/schema";
-import { textToJson } from "@/lib/utils";
-import { Textarea } from "@/components/ui/textarea";
-import { Input } from "@/components/ui/input";
-import { Button } from "@/components/ui/button";
+import { projects } from "@/db/schema";
 
-import {
-  Form,
-  FormControl,
-  FormField,
-  FormItem,
-  FormLabel,
-  FormMessage,
-} from "@/components/ui/form";
 import FormTestimonial from "./form";
 
 type Props = {

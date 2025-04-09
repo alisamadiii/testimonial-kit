@@ -33,7 +33,6 @@ export default async function EachProjectPage({ params }: Props) {
 
   return (
     <Content className="">
-      testin
       {/* <HydrationBoundary state={dehydrate(queryClient)}>
         <ProjectContent slug={slug} />
       </HydrationBoundary> */}

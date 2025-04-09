@@ -4,6 +4,7 @@ import * as React from "react";
 import { Area, AreaChart } from "recharts";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { Analytics } from "@/db/schema";
+import { addDays, format } from "date-fns";
 
 const chartConfig = {
   visitors: {
@@ -21,21 +22,29 @@ export function ProjectChart({
   analytics: Analytics["dateTestimonials"];
 }) {
   if (!analytics) return null;
-  console.log(analytics);
 
   const data = analytics.sort(
-    (a, b) => new Date(a.date).getTime() - new Date(b.date).getTime()
+    (a, b) =>
+      new Date(a?.date || "").getTime() - new Date(b?.date || "").getTime()
   );
 
   return (
     <ChartContainer config={chartConfig} className="aspect-auto h-[60px] w-3/5">
-      <AreaChart data={data}>
+      <AreaChart
+        data={[
+          ...Array.from({ length: 8 - data.length }).map((_, index) => ({
+            date: format(addDays(new Date(), -index), "yyyy-MM-dd"),
+            count: 0,
+          })),
+          ...data,
+        ]}
+      >
         <defs>
           <linearGradient id="fillAnalytics" x1="0" y1="0" x2="0" y2="1">
             <stop
               offset="5%"
               stopColor="var(--color-analytics)"
-              stopOpacity={1}
+              stopOpacity={0.2}
             />
             <stop
               offset="95%"
@@ -48,7 +57,7 @@ export function ProjectChart({
           dataKey="count"
           type="linear"
           fill="url(#fillAnalytics)"
-          stroke="var(--color-analytics)"
+          stroke="var(--border)"
           stackId="a"
         />
       </AreaChart>

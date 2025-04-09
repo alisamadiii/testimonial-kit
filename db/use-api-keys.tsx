@@ -2,16 +2,17 @@ import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { createApiKey, deleteApiKey, getApiKeys } from "./action";
 import { useGetUser } from "@/auth/useAuth";
 import { toast } from "sonner";
+import { ApiKey } from "./schema";
 
 export const useGetApiKeys = () => {
   return useQuery({
     queryKey: ["api-keys"],
     queryFn: async () => {
       try {
-        const { data, message } = await getApiKeys();
+        const { data, error } = await getApiKeys();
 
-        if (!data) {
-          throw new Error(message || "Failed to fetch API keys");
+        if (error) {
+          throw new Error(error);
         }
 
         return data;
@@ -33,12 +34,12 @@ export const useCreateApiKey = () => {
         throw new Error("User not found");
       }
 
-      const { data, message } = await createApiKey({
+      const { data, error } = await createApiKey({
         userId: userData.id,
       });
 
-      if (!data) {
-        throw new Error(message || "Failed to create API key");
+      if (error) {
+        throw new Error(error);
       }
 
       return data;
@@ -62,20 +63,29 @@ export const useDeleteApiKey = () => {
         throw new Error("User not found");
       }
 
-      const { data, message } = await deleteApiKey({
+      const { data, error } = await deleteApiKey({
         id,
       });
 
-      if (!data) {
-        throw new Error(message || "Failed to delete API key");
+      if (error) {
+        throw new Error(error);
       }
 
       return data;
     },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["api-keys"] });
+    onMutate: ({ id }) => {
+      const snapshot = queryClient.getQueryData(["api-keys"]);
+
+      queryClient.setQueryData(["api-keys"], (old: ApiKey[]) => {
+        return old.filter((apiKey) => apiKey.id !== id);
+      });
+
+      return () => queryClient.setQueryData(["api-keys"], snapshot);
     },
-    onError: (error) => {
+    onError: (error, _, rollback) => {
+      // How to revert the query data to the previous state?
+      rollback?.();
+
       toast.error(error.message);
     },
   });
