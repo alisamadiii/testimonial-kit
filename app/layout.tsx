@@ -35,11 +35,11 @@ export default function RootLayout({
     <html lang="en">
       <QueryClientProviders>
         <body
-          className={`${geistSans.variable} ${geistMono.variable} flex bg-black antialiased`}
+          className={`${geistSans.variable} ${geistMono.variable} flex antialiased`}
         >
           <SidebarProvider>
             <AppSidebar />
-            <main className="bg-background min-h-screen grow rounded-l-2xl">
+            <main className="bg-background relative z-10 min-h-screen grow rounded-l-2xl">
               <AppWrapper>{children}</AppWrapper>
             </main>
             <Toaster />

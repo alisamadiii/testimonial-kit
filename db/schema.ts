@@ -134,7 +134,7 @@ export const analytics = pgTable("analytics", {
     .default(0),
   totalViews: integer("total_views").notNull().default(0),
   dateTestimonials: json("date_testimonials")
-    .$type<Array<{ date: string; count: number } | null>>()
+    .$type<string[]>()
     .notNull()
     .default(sql`'[]'::json`),
 });

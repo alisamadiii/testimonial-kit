@@ -1,5 +1,5 @@
 import Content from "@/components/content";
-import Testimonials from "./testimonial";
+import ArchiveTestimonial from "./archive-testimonial";
 
 type Props = {
   params: Promise<{
@@ -7,12 +7,12 @@ type Props = {
   }>;
 };
 
-export default async function DashboardPage({ params }: Props) {
+export default async function ArchivePage({ params }: Props) {
   const { slug } = await params;
 
   return (
     <Content>
-      <Testimonials slug={slug} />
+      <ArchiveTestimonial slug={slug} />
     </Content>
   );
 }

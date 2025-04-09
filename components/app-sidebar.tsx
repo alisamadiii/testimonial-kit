@@ -42,10 +42,13 @@ export function AppSidebar() {
   }
 
   return (
-    <Sidebar className="text-background">
+    <Sidebar className="text-background isolate">
+      <div className="bg-foreground absolute top-0 left-0 h-full w-[calc(100%+48px)]"></div>
       <SidebarContent>
         <SidebarGroup>
-          <SidebarGroupLabel>Application</SidebarGroupLabel>
+          <SidebarGroupLabel className="text-background">
+            Application
+          </SidebarGroupLabel>
           <SidebarGroupContent>
             <SidebarMenu>
               {items.map((item) => (

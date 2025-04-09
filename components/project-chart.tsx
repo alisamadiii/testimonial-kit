@@ -5,6 +5,7 @@ import { Area, AreaChart } from "recharts";
 import { ChartConfig, ChartContainer } from "@/components/ui/chart";
 import { Analytics } from "@/db/schema";
 import { addDays, format } from "date-fns";
+import { groupByDate } from "@/lib/utils";
 
 const chartConfig = {
   visitors: {
@@ -23,12 +24,10 @@ export function ProjectChart({
 }) {
   if (!analytics) return null;
 
-  const data = analytics.sort(
+  const data = groupByDate(analytics).sort(
     (a, b) =>
       new Date(a?.date || "").getTime() - new Date(b?.date || "").getTime()
   );
-
-  console.log(data);
 
   return (
     <ChartContainer config={chartConfig} className="aspect-auto h-[60px] w-3/5">

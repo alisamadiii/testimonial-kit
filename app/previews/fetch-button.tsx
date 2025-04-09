@@ -6,12 +6,15 @@ export default function FetchButton() {
   return (
     <Button
       onClick={async () => {
-        const response = await fetch("/api/testimonials/xQBDi_KU67b", {
-          headers: {
-            "x-api-key":
-              "testimonial_JeCEKamoudhOV2tmgleZnNARSWSM+B7dsynvhi8MG5g=",
-          },
-        });
+        const response = await fetch(
+          "https://testimonial.alisamadii.com/api/testimonials/xQBDi_KU67b",
+          {
+            headers: {
+              "x-api-key":
+                "testimonial_FQyIGrbC9dGlqZAoY05SobIyykwfzrGj4pyTMck0BdA=",
+            },
+          }
+        );
 
         const data = await response.json();
 

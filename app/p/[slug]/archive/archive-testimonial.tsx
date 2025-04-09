@@ -1,11 +1,10 @@
 "use client";
 
 import { format } from "date-fns";
-import { Archive } from "lucide-react";
+import { ArchiveRestore } from "lucide-react";
 
 import { useGetTestimonials, useUpdateTestimonial } from "@/db/use-testimonial";
 import { Testimonial } from "@/db/schema";
-import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
 
@@ -13,7 +12,7 @@ type Props = {
   slug: string;
 };
 
-export default function Testimonials({ slug }: Props) {
+export default function ArchivePage({ slug }: Props) {
   const testimonials = useGetTestimonials(slug);
 
   if (testimonials.isPending)
@@ -31,7 +30,7 @@ export default function Testimonials({ slug }: Props) {
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       {testimonials.data
-        ?.filter((testimonial) => testimonial.status !== "archived")
+        ?.filter((testimonial) => testimonial.status === "archived")
         .map((testimonial) => (
           <TestimonialCard
             key={testimonial.id}
@@ -69,24 +68,13 @@ function TestimonialCard({
             updateTestimonial({
               projectId,
               id: testimonial.id,
-              status: "archived",
+              status: "pending",
               previousStatus: testimonial.status,
             })
           }
         >
-          <Archive />
+          <ArchiveRestore />
         </Button>
-        <Switch
-          checked={testimonial.status === "approved"}
-          onCheckedChange={(checked) =>
-            updateTestimonial({
-              projectId,
-              id: testimonial.id,
-              status: checked ? "approved" : "pending",
-              previousStatus: testimonial.status,
-            })
-          }
-        />
       </div>
     </div>
   );

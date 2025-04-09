@@ -1,10 +1,8 @@
-import { Suspense } from "react";
-
 import Apis from "./apis";
 import Content from "@/components/content";
 import CreateApiButton from "./create-api-button";
 
-export default function ApiKeysPage() {
+export default async function ApiKeysPage() {
   return (
     <Content>
       <div className="flex justify-between">
@@ -16,9 +14,7 @@ export default function ApiKeysPage() {
         </div>
         <CreateApiButton />
       </div>
-      <Suspense>
-        <Apis />
-      </Suspense>
+      <Apis />
     </Content>
   );
 }

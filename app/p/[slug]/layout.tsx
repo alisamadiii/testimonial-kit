@@ -1,12 +1,19 @@
 import React from "react";
 import Link from "next/link";
-import { ChevronLeft, House, KeyRound, Settings } from "lucide-react";
+import {
+  ChevronLeft,
+  House,
+  KeyRound,
+  Settings,
+  Send,
+  Archive,
+} from "lucide-react";
 
 import Content from "@/components/content";
 import { Button, buttonVariants } from "@/components/ui/button";
 import { Separator } from "@radix-ui/react-separator";
 
-const tabs = [
+const tabs = (slug?: string) => [
   {
     name: "Dashboard",
     key: "dashboard",
@@ -16,6 +23,17 @@ const tabs = [
     name: "Auth",
     key: "auth",
     icon: KeyRound,
+  },
+  {
+    name: "Send Testimonial",
+    key: "send-testimonial",
+    icon: Send,
+    href: `/t/${slug}`,
+  },
+  {
+    name: "Archive",
+    key: "archive",
+    icon: Archive,
   },
   {
     name: "Settings",
@@ -43,9 +61,9 @@ export default async function ProjectLayout({ children, params }: Props) {
             Projects
           </Button>
         </Link>
-        {tabs.map((tab) => (
+        {tabs(slug).map((tab) => (
           <Link
-            href={`/p/${slug}/${tab.key}`}
+            href={tab.href || `/p/${slug}/${tab.key}`}
             key={tab.name}
             className={buttonVariants({
               variant: tab.key === slug ? "default" : "ghost",

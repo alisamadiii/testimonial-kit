@@ -1,24 +1,17 @@
--- Add date_testimonials column to store JSON array of date counts
+-- Add date_testimonials column to store JSON array of timestamps
 ALTER TABLE analytics ADD COLUMN IF NOT EXISTS date_testimonials json DEFAULT '[]'::json;
 
 -- Create function to update date testimonials
 CREATE OR REPLACE FUNCTION update_date_testimonials()
 RETURNS TRIGGER AS $$
 DECLARE
-  date_str text;
   current_stats json;
-  date_exists boolean;
-  i integer;
-  temp_array json[];
 BEGIN
   -- Only proceed if this is an actual INSERT operation
   IF TG_OP != 'INSERT' THEN
     RETURN NEW;
   END IF;
 
-  -- Get the date string in YYYY-MM-DD format using local timezone
-  date_str := to_char(NEW.created_at AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York', 'YYYY-MM-DD');
-  
   -- Get current stats
   SELECT date_testimonials INTO current_stats
   FROM analytics
@@ -29,43 +22,14 @@ BEGIN
     current_stats := '[]'::json;
   END IF;
 
-  -- Check if date exists in array and update it
-  temp_array := ARRAY[]::json[];
-  date_exists := false;
-  FOR i IN 0..json_array_length(current_stats)-1 LOOP
-    IF (current_stats->i->>'date') = date_str THEN
-      -- Update existing date count
-      temp_array := array_append(temp_array,
-        json_build_object(
-          'date', date_str,
-          'count', (current_stats->i->>'count')::integer + 1
-        )::json
-      );
-      date_exists := true;
-    ELSE
-      -- Keep other dates as is
-      temp_array := array_append(temp_array,
-        json_build_object(
-          'date', current_stats->i->>'date',
-          'count', (current_stats->i->>'count')::integer
-        )::json
-      );
-    END IF;
-  END LOOP;
-  
-  -- Add new date if it doesn't exist
-  IF NOT date_exists THEN
-    temp_array := array_append(temp_array,
-      json_build_object(
-        'date', date_str,
-        'count', 1
-      )::json
-    );
-  END IF;
-  
-  -- Update analytics with array converted to json
+  -- Add new timestamp to array
   UPDATE analytics
-  SET date_testimonials = array_to_json(temp_array)
+  SET date_testimonials = (
+    SELECT json_agg(t)
+    FROM (
+      SELECT DISTINCT unnest(array_append(ARRAY(SELECT json_array_elements_text(current_stats)), NEW.created_at::text)) as t
+    ) as unique_timestamps
+  )
   WHERE project_id = NEW.project_id;
   
   RETURN NEW;
@@ -80,22 +44,12 @@ CREATE TRIGGER testimonial_date_stats_insert
   EXECUTE FUNCTION update_date_testimonials();
 
 -- Initialize date stats for existing testimonials
-WITH date_counts AS (
-  SELECT 
-    project_id,
-    to_char(created_at AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York', 'YYYY-MM-DD') as date,
-    COUNT(*) as count
-  FROM testimonials
-  GROUP BY project_id, to_char(created_at AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York', 'YYYY-MM-DD')
-)
 UPDATE analytics a
 SET date_testimonials = (
-  SELECT json_agg(
-    json_build_object(
-      'date', dc.date,
-      'count', dc.count
-    )
-  )
-  FROM date_counts dc
-  WHERE dc.project_id = a.project_id
+  SELECT json_agg(created_at::text)
+  FROM (
+    SELECT DISTINCT created_at
+    FROM testimonials t
+    WHERE t.project_id = a.project_id
+  ) as unique_timestamps
 );

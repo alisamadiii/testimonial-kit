@@ -9,10 +9,11 @@ import { CreateProjectAlert } from "@/components/alerts/create-project";
 
 import { Project } from "@/db/schema";
 import { ProjectChart } from "@/components/project-chart";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function Home() {
   const { data: userData } = useGetUser();
-  const { data: projects } = useGetProjects();
+  const projects = useGetProjects();
 
   return (
     <Content>
@@ -30,9 +31,13 @@ export default function Home() {
       </div>
 
       <div className="mt-8 grid grid-cols-1 gap-4 md:grid-cols-2">
-        {projects?.map((project) => (
-          <ProjectCard key={project.id} project={project} />
-        ))}
+        {projects.isPending
+          ? Array.from({ length: 4 }).map((_, index) => (
+              <Skeleton key={index} className="aspect-16/5 w-full" />
+            ))
+          : projects.data?.map((project) => (
+              <ProjectCard key={project.id} project={project} />
+            ))}
       </div>
     </Content>
   );
