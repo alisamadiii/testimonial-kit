@@ -16,8 +16,8 @@ BEGIN
     RETURN NEW;
   END IF;
 
-  -- Get the date string in YYYY-MM-DD format
-  date_str := to_char(NEW.created_at, 'YYYY-MM-DD');
+  -- Get the date string in YYYY-MM-DD format using local timezone
+  date_str := to_char(NEW.created_at AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York', 'YYYY-MM-DD');
   
   -- Get current stats
   SELECT date_testimonials INTO current_stats
@@ -83,10 +83,10 @@ CREATE TRIGGER testimonial_date_stats_insert
 WITH date_counts AS (
   SELECT 
     project_id,
-    to_char(created_at, 'YYYY-MM-DD') as date,
+    to_char(created_at AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York', 'YYYY-MM-DD') as date,
     COUNT(*) as count
   FROM testimonials
-  GROUP BY project_id, to_char(created_at, 'YYYY-MM-DD')
+  GROUP BY project_id, to_char(created_at AT TIME ZONE 'UTC' AT TIME ZONE 'America/New_York', 'YYYY-MM-DD')
 )
 UPDATE analytics a
 SET date_testimonials = (

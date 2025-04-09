@@ -28,6 +28,8 @@ export function ProjectChart({
       new Date(a?.date || "").getTime() - new Date(b?.date || "").getTime()
   );
 
+  console.log(data);
+
   return (
     <ChartContainer config={chartConfig} className="aspect-auto h-[60px] w-3/5">
       <AreaChart

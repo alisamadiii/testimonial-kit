@@ -6,7 +6,7 @@ export default function FetchButton() {
   return (
     <Button
       onClick={async () => {
-        const response = await fetch("/api/testimonials/YIYTXSlcely", {
+        const response = await fetch("/api/testimonials/xQBDi_KU67b", {
           headers: {
             "x-api-key":
               "testimonial_JeCEKamoudhOV2tmgleZnNARSWSM+B7dsynvhi8MG5g=",
