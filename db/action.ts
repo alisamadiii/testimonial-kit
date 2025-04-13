@@ -15,6 +15,12 @@ import {
 import { desc, eq, and } from "drizzle-orm";
 import { faker } from "@faker-js/faker";
 
+export const checkEnvVariables = async (value: string): Promise<boolean> => {
+  const data = process.env[value];
+  if (!data) return false;
+  return true;
+};
+
 export const getApiKeys = async (): Promise<ServerResponse<ApiKey[]>> => {
   try {
     const data = await db.select().from(apiKeys);
@@ -170,6 +176,23 @@ export const deleteProject = async ({
   }
 };
 
+export const updateProject = async ({
+  id,
+  values,
+}: {
+  id: string;
+  values: Partial<Project>;
+}): Promise<ServerResponse<string>> => {
+  try {
+    await db.update(projects).set(values).where(eq(projects.id, id));
+
+    return { data: "Project updated" };
+  } catch (error) {
+    console.error(error);
+    return { error: (error as Error).message || "Failed to update project" };
+  }
+};
+
 // testimonials
 export const getTestimonials = async ({
   projectId,
@@ -196,12 +219,14 @@ export const createTestimonial = async ({
   projectId,
   name,
   message,
+  avatar,
 }: TestimonialInsert): Promise<ServerResponse<string>> => {
   try {
     await db.insert(testimonials).values({
       projectId,
       name,
       message,
+      avatar,
     });
 
     return { data: "Testimonial created" };

@@ -12,6 +12,7 @@ import {
   uuid,
 } from "drizzle-orm/pg-core";
 import { sql } from "drizzle-orm";
+import { authProvidersType } from "@/types/providers";
 
 export const tasksTable = pgTable("tasks", {
   id: integer().primaryKey().generatedAlwaysAsIdentity(),
@@ -102,6 +103,8 @@ export const projects = pgTable("projects", {
     .default(sql`generate_project_id()`),
   name: text("name").notNull(),
   description: text("description").notNull().default(""),
+  auths: jsonb("auths").$type<authProvidersType[] | null>().default(null),
+  authsEnabled: boolean("auths_enabled").notNull().default(false),
   createdAt: timestamp("created_at"),
   userId: text("user_id")
     .notNull()
@@ -113,6 +116,7 @@ export const testimonials = pgTable("testimonials", {
     .default(sql`gen_random_uuid()`)
     .primaryKey(),
   name: text("name").notNull(),
+  avatar: text("avatar").$type<string | null>().default(null),
   message: text("message").notNull(),
   createdAt: timestamp("created_at").notNull().defaultNow(),
   status: text("status", {
@@ -149,6 +153,7 @@ export type ApiKeyInsert = typeof apiKeys.$inferInsert;
 export type Project = typeof projects.$inferSelect & {
   analytics: typeof analytics.$inferSelect;
 };
+export type ProjectSelect = typeof projects.$inferSelect;
 export type ProjectInsert = typeof projects.$inferInsert;
 export type Testimonial = typeof testimonials.$inferSelect;
 export type TestimonialInsert = typeof testimonials.$inferInsert;

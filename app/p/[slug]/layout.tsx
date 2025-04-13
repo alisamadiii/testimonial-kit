@@ -7,6 +7,7 @@ import {
   Settings,
   Send,
   Archive,
+  BarChart,
 } from "lucide-react";
 
 import Content from "@/components/content";
@@ -34,6 +35,11 @@ const tabs = (slug?: string) => [
     name: "Archive",
     key: "archive",
     icon: Archive,
+  },
+  {
+    name: "Analytics",
+    key: "analytics",
+    icon: BarChart,
   },
   {
     name: "Settings",

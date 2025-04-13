@@ -1,6 +1,18 @@
 import Content from "@/components/content";
-import React from "react";
+import AuthContent from "./auth-content";
 
-export default function AuthPage() {
-  return <Content>Auth</Content>;
+interface Props {
+  params: Promise<{
+    slug: string;
+  }>;
+}
+
+export default async function AuthPage({ params }: Props) {
+  const { slug } = await params;
+
+  return (
+    <Content>
+      <AuthContent slug={slug} />
+    </Content>
+  );
 }

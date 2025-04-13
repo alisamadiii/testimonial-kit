@@ -30,7 +30,7 @@ export default async function TestimonialPage({ params }: Props) {
 
   return (
     <Content className="flex max-w-sm flex-col items-center justify-center">
-      <FormTestimonial slug={slug} description={data.description} />
+      <FormTestimonial slug={slug} project={data} />
     </Content>
   );
 }

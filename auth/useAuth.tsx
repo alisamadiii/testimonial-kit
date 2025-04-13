@@ -7,6 +7,7 @@ import { toast } from "sonner";
 import { authClient, signIn, signOut, signUp } from "@/auth/auth-client";
 import { revalidate } from "@/lib/action";
 import { getSession } from "./action";
+import { authProvidersType } from "@/types/providers";
 
 export function useGetUser() {
   return useQuery({
@@ -209,6 +210,26 @@ export function useSignInWithGoogle() {
         const err = error as APIError;
         throw new Error(err.message || "Failed to sign in with google");
       }
+    },
+    onError: (error) => {
+      toast.error(error.message);
+    },
+  });
+}
+
+export function useSignInWithProvider() {
+  return useMutation({
+    mutationFn: async ({ provider }: { provider: authProvidersType }) => {
+      const { data, error } = await signIn.social({
+        provider,
+        callbackURL: `${window.location.href}`,
+      });
+
+      if (error) {
+        throw new Error(error.message);
+      }
+
+      return data;
     },
     onError: (error) => {
       toast.error(error.message);

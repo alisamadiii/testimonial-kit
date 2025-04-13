@@ -1,9 +1,7 @@
 "use client";
 
 import React from "react";
-import { useRouter } from "next/navigation";
 import Link from "next/link";
-import { ArrowLeftIcon } from "lucide-react";
 
 import { useForm } from "react-hook-form";
 import { z } from "zod";
@@ -19,7 +17,7 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useSignInWithGoogle, useSignInWithEmail } from "@/auth/useAuth";
+import { useSignInWithEmail } from "@/auth/useAuth";
 
 const formSchema = z.object({
   email: z.string().email(),
@@ -27,10 +25,7 @@ const formSchema = z.object({
 });
 
 export default function Login() {
-  const signInWithGoogleMutation = useSignInWithGoogle();
   const signInWithEmailMutation = useSignInWithEmail();
-
-  const router = useRouter();
 
   const form = useForm<z.infer<typeof formSchema>>({
     resolver: zodResolver(formSchema),
@@ -49,12 +44,6 @@ export default function Login() {
 
   return (
     <div className="mx-auto flex min-h-screen w-full max-w-md flex-col items-center justify-center px-8 py-12">
-      <div className="absolute top-4 left-1/2 w-full max-w-4xl -translate-x-1/2 px-2 md:top-8">
-        <Button variant="ghost" onClick={() => router.back()}>
-          <ArrowLeftIcon />
-          Go back
-        </Button>
-      </div>
       <div
         className="flex size-11 shrink-0 items-center justify-center rounded-full border"
         aria-hidden="true"
@@ -128,30 +117,6 @@ export default function Login() {
           <Button type="submit" disabled={form.formState.isSubmitting}>
             Login
           </Button>
-
-          <div className="before:bg-border after:bg-border flex items-center gap-3 before:h-px before:flex-1 after:h-px after:flex-1">
-            <span className="text-muted-foreground text-xs">Or</span>
-          </div>
-          <div className="flex w-full flex-col gap-1">
-            <Button
-              type="button"
-              variant="outline"
-              onClick={() => signInWithGoogleMutation.mutate()}
-              disabled={signInWithGoogleMutation.isPending}
-            >
-              Login with Google
-            </Button>
-
-            <Link
-              href="/sign-up"
-              className={buttonVariants({
-                variant: "link",
-                className: "text-muted-foreground",
-              })}
-            >
-              Don&apos;t have an account? Sign up
-            </Link>
-          </div>
         </form>
       </Form>
       <div className="h-12"></div>

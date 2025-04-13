@@ -1,13 +1,14 @@
 "use client";
 
 import { format } from "date-fns";
-import { Archive } from "lucide-react";
+import { Archive, User } from "lucide-react";
 
 import { useGetTestimonials, useUpdateTestimonial } from "@/db/use-testimonial";
 import { Testimonial } from "@/db/schema";
 import { Switch } from "@/components/ui/switch";
 import { Skeleton } from "@/components/ui/skeleton";
 import { Button } from "@/components/ui/button";
+import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 
 type Props = {
   slug: string;
@@ -15,6 +16,8 @@ type Props = {
 
 export default function Testimonials({ slug }: Props) {
   const testimonials = useGetTestimonials(slug);
+
+  console.log(testimonials.data);
 
   if (testimonials.isPending)
     return (
@@ -27,6 +30,13 @@ export default function Testimonials({ slug }: Props) {
 
   if (testimonials.isError)
     return <div>Error: {testimonials.error.message}</div>;
+
+  if (testimonials.data?.length === 0)
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p className="text-muted-foreground">No testimonials found</p>
+      </div>
+    );
 
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
@@ -55,7 +65,15 @@ function TestimonialCard({
   return (
     <div className="flex items-start justify-between gap-8 rounded-lg border p-4 shadow-sm">
       <div>
-        <h3 className="text-lg font-medium">{testimonial.name}</h3>
+        <div className="mb-2 flex items-center gap-2">
+          <Avatar>
+            <AvatarImage src={testimonial.avatar || undefined} />
+            <AvatarFallback>
+              <User />
+            </AvatarFallback>
+          </Avatar>
+          <h3 className="text-lg font-medium">{testimonial.name}</h3>
+        </div>
         <p className="text-sm">{testimonial.message}</p>
         <small className="text-muted-foreground text-xs">
           {format(new Date(testimonial.createdAt), "MMM d, yyyy")}

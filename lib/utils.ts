@@ -28,8 +28,27 @@ export function textToJson(text?: string) {
   }
 }
 
-export function groupByDate(timestamps: string[]) {
-  const grouped = timestamps.reduce(
+export function groupByDate(timestamps: string[] | undefined | null) {
+  if (!timestamps || !Array.isArray(timestamps) || timestamps.length === 0) {
+    return [];
+  }
+
+  const dates = timestamps.map((item) => {
+    // Parse the UTC date string
+    const [datePart, timePart] = item.split(" ");
+    const [year, month, day] = datePart.split("-").map(Number);
+    const [hour, minute, second] = timePart.split(":").map(Number);
+
+    // Create a date object in UTC
+    const utcDate = new Date(
+      Date.UTC(year, month - 1, day, hour, minute, second)
+    );
+
+    // Format the date in local timezone
+    return format(utcDate, "yyyy-MM-dd HH:mm:ss");
+  });
+
+  const grouped = dates.reduce(
     (acc, timestamp) => {
       const date = format(parseISO(timestamp), "yyyy-MM-dd");
       acc[date] = (acc[date] || 0) + 1;

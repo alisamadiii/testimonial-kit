@@ -27,6 +27,13 @@ export default function ArchivePage({ slug }: Props) {
   if (testimonials.isError)
     return <div>Error: {testimonials.error.message}</div>;
 
+  if (testimonials.data?.length === 0)
+    return (
+      <div className="flex h-full items-center justify-center">
+        <p className="text-muted-foreground">No archived testimonials found</p>
+      </div>
+    );
+
   return (
     <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
       {testimonials.data

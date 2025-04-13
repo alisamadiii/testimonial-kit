@@ -29,14 +29,18 @@ export const useGetTestimonials = (projectId: string) => {
 };
 
 export const useCreateTestimonial = () => {
-  const queryClient = useQueryClient();
-
   return useMutation({
-    mutationFn: async ({ projectId, name, message }: TestimonialInsert) => {
+    mutationFn: async ({
+      projectId,
+      name,
+      message,
+      avatar,
+    }: TestimonialInsert) => {
       const { data, error } = await createTestimonial({
         projectId,
         name,
         message,
+        avatar,
       });
 
       if (error) {
@@ -44,10 +48,6 @@ export const useCreateTestimonial = () => {
       }
 
       return data;
-    },
-    onSuccess: () => {
-      queryClient.invalidateQueries({ queryKey: ["testimonials"] });
-      toast.success("Testimonial created successfully");
     },
     onError: (error) => {
       toast.error(error.message);

@@ -1,10 +1,8 @@
-import { headers } from "next/headers";
 import { CheckIcon, XIcon } from "lucide-react";
 
 import { cn } from "@/lib/utils";
 import { db } from "@/db";
 import { user } from "@/db/schema";
-import { auth } from "@/auth/auth";
 import {
   dehydrate,
   HydrationBoundary,
@@ -13,10 +11,9 @@ import {
 import { getSession } from "@/auth/action";
 
 import FirstUser from "@/components/first-user";
-import Login from "@/components/login";
 import Content from "@/components/content";
 
-import { Badge } from "./ui/badge";
+import { Badge } from "@/components/ui/badge";
 
 export default async function AppWrapper({
   children,
@@ -166,28 +163,6 @@ export default async function AppWrapper({
 
   if (users.length === 0) {
     return <FirstUser />;
-  }
-
-  const userData = await auth.api.getSession({
-    headers: await headers(),
-  });
-
-  if (!userData) {
-    return <Login />;
-  }
-
-  if (userData.user.role !== "admin") {
-    return (
-      <Content>
-        <div className="mb-8 space-y-3">
-          <h1 className="text-3xl font-bold text-neutral-900">Access Denied</h1>
-          <p className="text-neutral-600">
-            You need to manually make your self an admin to continue. Simply go
-            to your DB and update your role to &quot;admin&quot;.
-          </p>
-        </div>
-      </Content>
-    );
   }
 
   // Initialize QueryClient and prefetch session data
